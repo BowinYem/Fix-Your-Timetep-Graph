@@ -4,7 +4,6 @@ import numpy as np
 import time
 import TimeStep
 from TimeStep import TimeStepData
-from Pos import Position
 
 WINDOW_SIZE_X = 15
 WINDOW_SIZE_Y = 10
@@ -19,7 +18,7 @@ timeSteps = (
     TimeStepData(TimeStep.MixedTimeStep, 'yellow', '^')
 )
 
-currentPos = Position(0.0, 0.0)
+currentPos = 0.0
 start_time = time.perf_counter()
 current_time = time.perf_counter()
 i = 0
@@ -34,11 +33,11 @@ def Update(frame, *fargs) -> None:
         i += 1
         start_time = newTime
         current_time = newTime
-        currentPos = Position(0.0, 0.0)
+        currentPos = 0.0
     elif(i < len(timeSteps)):
-        newPos = timeSteps[i].function(currentPos) if (i == 0) else timeSteps[i].function(currentPos, newTime - current_time)
+        currentPos = timeSteps[i].function(currentPos) if (i == 0) else timeSteps[i].function(currentPos, newTime - current_time)
         current_time = newTime
-        ax.plot(elapsedTime, newPos.y, timeSteps[i].marker, linewidth=2.0, color = timeSteps[i].color)
+        ax.plot(elapsedTime, currentPos, timeSteps[i].marker, linewidth=2.0, color = timeSteps[i].color)
 
 ####################
 
