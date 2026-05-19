@@ -7,26 +7,36 @@ class TimeStepData:
         self.color = color
         self.marker = marker
     
-def Integrate(p : Position, frameTime : float) -> None:
-def Integrate(p : float, frameTime : float) -> float:
+
+damping = 0
+springConst = 20
+mass = 1
+def SpringIntegrate(p : float, frameTime : float) -> float:
+    acceleration = -((damping * SpringIntegrate.velocity) + (springConst * p)) / mass
+    SpringIntegrate.velocity += acceleration * frameTime
+    p += SpringIntegrate.velocity * frameTime
+    return p      
+SpringIntegrate.velocity = 0
+
+def LinearIntegrate(p : float, frameTime : float) -> float:
     velocity = 1
     p += (velocity * frameTime)
     return p
 
 def FixedTimeStep(p : float) -> float:
     dt = 1.0 / 60.0
-    p = Integrate(p, dt)
+    p = SpringIntegrate(p, dt)
     return p    
 
 def VariableTimeStep(p : float, frameTime : float) -> float:
-    p = Integrate(p, frameTime)
+    p = SpringIntegrate(p, frameTime)
     return p
     
 def SemiFixedTimeStep(p : float, frameTime : float) -> float:
     dt = .016 # 1 / 60
     while(frameTime > 0.0):
         deltaTime = min(frameTime, dt)
-        p = Integrate(p, deltaTime)
+        p = SpringIntegrate(p, deltaTime)
         frameTime -= deltaTime
     return p
 
@@ -40,7 +50,7 @@ def MixedTimeStep(p : float, frameTime : float) -> float:
     
     while(MixedTimeStep.accumulator >= dt):
         MixedTimeStep.prevPos = p
-        p = Integrate(p, dt)
+        p = SpringIntegrate(p, dt)
         MixedTimeStep.accumulator -= dt
 
     alpha = MixedTimeStep.accumulator / dt
