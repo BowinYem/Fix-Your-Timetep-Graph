@@ -50,6 +50,7 @@ def Update(frame) -> list[Line2D]:
         currentPos = INITIAL_POS
         x_points = []
         y_points = []
+        SpringIntegrate.velocity = 0
     elif(i < len(timeSteps)):
         currentPos = timeSteps[i].function(currentPos) if (i == 0) else timeSteps[i].function(currentPos, newTime - current_time)
         current_time = newTime
