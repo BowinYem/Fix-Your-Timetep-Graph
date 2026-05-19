@@ -1,12 +1,11 @@
 from collections.abc import Callable 
+from matplotlib.lines import Line2D
 
 class TimeStepData:
     def __init__(self, function : Callable[[float], float] | Callable[[float, float], float], 
-                 color : str, marker : str):
+                 line : Line2D):
         self.function = function
-        self.color = color
-        self.marker = marker
-    
+        self.line = line
 
 damping = 0
 springConst = 20
