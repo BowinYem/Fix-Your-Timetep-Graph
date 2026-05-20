@@ -54,7 +54,7 @@ def Update(frame) -> list[Line2D]:
         y_points = []
         integratefunc.velocity = 0
     elif(i < len(timeSteps)):
-        currentPos = timeSteps[i].function(currentPos, INTEGRATE) if (i == 0) else timeSteps[i].function(currentPos, newTime - current_time, INTEGRATE)
+        currentPos =  timeSteps[i].function(currentPos, INTEGRATE, newTime - current_time)
         current_time = newTime
         x_points.append(elapsedTime)
         y_points.append(currentPos)
