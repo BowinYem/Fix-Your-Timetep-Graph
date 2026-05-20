@@ -5,13 +5,15 @@ import numpy as np
 import time
 import TimeStep
 from TimeStep import TimeStepData
-from TimeStep import SpringIntegrate
+import integratefunc
+from integratefunc import IntegrateEnum
 
 WINDOW_SIZE_X = 15
 WINDOW_SIZE_Y = 10
 Y_AXIS_LIM = 20
 TEST_TIME = 10
 INITIAL_POS = 5.0
+INTEGRATE = IntegrateEnum.SPRING_INTG
 
 x_points = []
 y_points = []
@@ -50,9 +52,9 @@ def Update(frame) -> list[Line2D]:
         currentPos = INITIAL_POS
         x_points = []
         y_points = []
-        SpringIntegrate.velocity = 0
+        integratefunc.velocity = 0
     elif(i < len(timeSteps)):
-        currentPos = timeSteps[i].function(currentPos) if (i == 0) else timeSteps[i].function(currentPos, newTime - current_time)
+        currentPos = timeSteps[i].function(currentPos, INTEGRATE) if (i == 0) else timeSteps[i].function(currentPos, newTime - current_time, INTEGRATE)
         current_time = newTime
         x_points.append(elapsedTime)
         y_points.append(currentPos)
