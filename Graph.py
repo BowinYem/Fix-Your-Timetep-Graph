@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
-from matplotlib.lines import Line2D 
+from matplotlib.artist import Artist 
+from matplotlib.text import Text
 import numpy as np
 import time
 import TimeStep
@@ -17,6 +18,10 @@ Y_AXIS_LIM = 20
 TEST_TIME = 10
 INITIAL_POS = 5.0
 INTEGRATE = IntegrateEnum.SPRING_INTG
+RESULT_TEXT_X = .05
+RESULT_TEXT_Y = Y_AXIS_LIM - 4.5
+RESULT_TEXT_LINESPC = 1.5
+RESULT_TEXT_BGCOLOR = "grey"
 
 x_points = []
 y_points = []
@@ -35,6 +40,16 @@ timeSteps = (
     TimeStepData(TimeStep.MixedTimeStep, ax.plot([], [], 'yo-', lw=2)[0])
 )
 
+def UpdatePosText(t : Text):
+    positionText = "Final Positions:\n"
+    for ts in timeSteps:
+        positionText += "   " + ts.name + ": " + " ".join(str(round(pos,2)) for pos in ts.finalPos) + '\n'
+    t = plt.text(RESULT_TEXT_X, RESULT_TEXT_Y, positionText, backgroundcolor=RESULT_TEXT_BGCOLOR, linespacing=RESULT_TEXT_LINESPC)
+    return t
+
+resultText = plt.text(RESULT_TEXT_X, RESULT_TEXT_Y, "", backgroundcolor=RESULT_TEXT_BGCOLOR, linespacing=RESULT_TEXT_LINESPC)
+resultText = UpdatePosText(resultText)
+
 plt.xlabel(X_LABEL)
 plt.ylabel(Y_LABEL)
 plt.title(TITLE)
@@ -45,21 +60,23 @@ currentPos = INITIAL_POS
 start_time = time.perf_counter()
 current_time = time.perf_counter()
 i = 0
-def Update(frame) -> list[Line2D]:
-    global i, start_time, current_time, currentPos, x_points, y_points
+def Update(frame) -> list[Artist]:
+    global i, start_time, current_time, currentPos, x_points, y_points, resultText
     newTime = time.perf_counter()
     elapsedTime = newTime - start_time
 
     if(i >= len(timeSteps)):
         ani.pause()
     elif(elapsedTime >= TEST_TIME):
-        i += 1
         start_time = newTime
         current_time = newTime
+        timeSteps[i].finalPos.append(currentPos)
         currentPos = INITIAL_POS
         x_points = []
         y_points = []
         integratefunc.velocity = 0
+        resultText = UpdatePosText(resultText)
+        i += 1
     elif(i < len(timeSteps)):
         currentPos =  timeSteps[i].function(currentPos, INTEGRATE, newTime - current_time)
         current_time = newTime
@@ -67,10 +84,18 @@ def Update(frame) -> list[Line2D]:
         y_points.append(currentPos)
         timeSteps[i].line.set_data(x_points, y_points)
         
-    return [t.line for t in timeSteps]
-
+    returnArtist : list[Artist] = [t.line for t in timeSteps]
+    returnArtist.append(resultText)
+    return returnArtist
 
 #############################
 
 ani = anim.FuncAnimation(fig, Update, interval=100, cache_frame_data=False, blit=True) # interval measured in ms
 plt.show()
+
+"""
+To do:
+- Add Labels (A key, axis labels)
+- Text for our final position(s) 
+- Repeat test option
+"""
