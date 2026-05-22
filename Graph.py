@@ -19,7 +19,7 @@ TEST_TIME = 10
 INITIAL_POS = 5.0
 INTEGRATE = IntegrateEnum.SPRING_INTG
 RESULT_TEXT_X = .05
-RESULT_TEXT_Y = Y_AXIS_LIM - 4.5
+RESULT_TEXT_Y = Y_AXIS_LIM - 4.8
 RESULT_TEXT_LINESPC = 1.5
 RESULT_TEXT_BGCOLOR = "grey"
 TOTAL_TESTS = 5
@@ -54,6 +54,7 @@ resultText = UpdatePosText(resultText)
 plt.xlabel(X_LABEL)
 plt.ylabel(Y_LABEL)
 plt.title(TITLE)
+plt.tight_layout()
 
 #############################
 
