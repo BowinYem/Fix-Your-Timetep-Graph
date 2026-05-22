@@ -22,6 +22,7 @@ RESULT_TEXT_X = .05
 RESULT_TEXT_Y = Y_AXIS_LIM - 4.5
 RESULT_TEXT_LINESPC = 1.5
 RESULT_TEXT_BGCOLOR = "grey"
+TOTAL_TESTS = 5
 
 x_points = []
 y_points = []
@@ -43,7 +44,7 @@ timeSteps = (
 def UpdatePosText(t : Text):
     positionText = "Final Positions:\n"
     for ts in timeSteps:
-        positionText += "   " + ts.name + ": " + " ".join(str(round(pos,2)) for pos in ts.finalPos) + '\n'
+        positionText += "   " + ts.name + ": " + ", ".join(str(round(pos,2)) for pos in ts.finalPos) + '\n'
     t = plt.text(RESULT_TEXT_X, RESULT_TEXT_Y, positionText, backgroundcolor=RESULT_TEXT_BGCOLOR, linespacing=RESULT_TEXT_LINESPC)
     return t
 
@@ -59,14 +60,20 @@ plt.title(TITLE)
 currentPos = INITIAL_POS
 start_time = time.perf_counter()
 current_time = time.perf_counter()
+currentTest = 0
 i = 0
 def Update(frame) -> list[Artist]:
-    global i, start_time, current_time, currentPos, x_points, y_points, resultText
+    global i, currentTest, start_time, current_time, currentPos, x_points, y_points, resultText
     newTime = time.perf_counter()
     elapsedTime = newTime - start_time
 
-    if(i >= len(timeSteps)):
+    if(currentTest >= TOTAL_TESTS):
         ani.pause()
+    elif(i >= len(timeSteps)):
+        i = 0
+        currentTest += 1
+        for ts in timeSteps:
+            ts.line.set_data(x_points, y_points) 
     elif(elapsedTime >= TEST_TIME):
         start_time = newTime
         current_time = newTime
