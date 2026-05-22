@@ -8,6 +8,9 @@ from TimeStep import TimeStepData
 import integratefunc
 from integratefunc import IntegrateEnum
 
+X_LABEL = "Time Elapsed"
+Y_LABEL = "Position"
+TITLE = "Spring Damping" 
 WINDOW_SIZE_X = 15
 WINDOW_SIZE_Y = 10
 Y_AXIS_LIM = 20
@@ -31,6 +34,10 @@ timeSteps = (
     TimeStepData(TimeStep.SemiFixedTimeStep, ax.plot([], [], 'bo-', lw=2)[0]),
     TimeStepData(TimeStep.MixedTimeStep, ax.plot([], [], 'yo-', lw=2)[0])
 )
+
+plt.xlabel(X_LABEL)
+plt.ylabel(Y_LABEL)
+plt.title(TITLE)
 
 #############################
 
