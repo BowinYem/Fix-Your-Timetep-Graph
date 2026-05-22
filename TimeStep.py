@@ -7,6 +7,8 @@ class TimeStepData:
                  line : Line2D):
         self.function = function
         self.line = line
+        self.name = function.__name__
+        self.finalPos = []
 
 def FixedTimeStep(p : float, integrationFunc : IntegrateEnum, frameTime : float = 0.0) -> float:
     # Note: frameTime parameter not used in this function - frameTime defined in order to be uniform with the other time step functions
