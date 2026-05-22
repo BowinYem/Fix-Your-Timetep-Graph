@@ -100,10 +100,3 @@ def Update(frame) -> list[Artist]:
 
 ani = anim.FuncAnimation(fig, Update, interval=100, cache_frame_data=False, blit=True) # interval measured in ms
 plt.show()
-
-"""
-To do:
-- Add Labels (A key, axis labels)
-- Text for our final position(s) 
-- Repeat test option
-"""
